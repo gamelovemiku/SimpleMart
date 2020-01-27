@@ -1,6 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Search from "../views/Search.vue";
+import Global from "../views/Global.vue";
+import ItemManager from "../views/backend/ItemManager.vue";
+import Profile from "../views/backend/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -9,6 +13,26 @@ const routes = [
     path: "/",
     name: "home",
     component: Home
+  },
+  {
+    path: "/global",
+    name: "global",
+    component: Global
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: Search
+  },
+  {
+    path: "/backend/itemmanager",
+    name: "itemmanager",
+    component: ItemManager
+  },
+  {
+    path: "/backend/profile",
+    name: "profile",
+    component: Profile
   },
   {
     path: "/about",

@@ -1,32 +1,57 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <Navbar />
+    <transition name="slide-fade">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import Navbar from "./components/Navbar.vue";
+
+export default {
+  components: {
+    Navbar
+  },
+  data() {},
+  methods: {},
+  mounted() {}
+};
+</script>
+
+<style lang="scss">
+/*
+@font-face {
+  font-family: Thonburi;
+  src: url(./assets/fonts/Thonburi.otf);
 }
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
+@font-face {
+  font-family: Thonburi;
+  src: url(./assets/fonts/Thonburi-Bold.otf);
   font-weight: bold;
-  color: #2c3e50;
+}
+*/
+html,
+div,
+button,
+span {
+  font-family: "Segoe UI", "Thonburi", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+.slide-fade-enter-active {
+  transition: all 0.5s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all 0s;
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>
