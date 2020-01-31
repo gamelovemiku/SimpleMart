@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { auth, GoogleProvider } from "../../firebase";
+import { auth } from "../../firebase";
 export default {
   data() {
     return {
@@ -62,22 +62,14 @@ export default {
         .finally(() => (this.loading = false));
     },
     signOut: function() {
-      auth.signOut().then(response => {
-        window.console.log(response);
-        this.$router.replace("/login");
-      });
+      this.$store.dispatch("signOut");
     },
     signInWithGoogle: function() {
-      window.console.log("signInWithGoogleFB");
-      auth.signInWithPopup(GoogleProvider).then(function(result) {
-        window.console.log(result.credential.accessToken);
-        window.console.log(result.user);
-      });
+      this.$store.dispatch("signInWithGoogle");
     }
   },
   mounted() {
     auth.onAuthStateChanged(data => (this.authUser = data));
-    window.console.log(this.$store.getters.getLoggedIn.isLoggedIn);
   }
 };
 </script>

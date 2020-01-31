@@ -1,20 +1,61 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import router from "./../router";
+import { ToastProgrammatic as Toast } from "buefy";
+import { auth, GoogleProvider } from "../firebase";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: {
-      isLoggedIn: false
+    user: null,
+    navbar: {
+      authModalOpen: false
     }
   },
   getters: {
-    getLoggedIn(state) {
+    getUser(state) {
       return state.user;
+    },
+    isAuthModalOpen(state) {
+      return state.navbar.authModalOpen;
     }
   },
-  mutations: {},
-  actions: {},
+  mutations: {
+    setSession(state, value) {
+      state.user = value;
+    }
+  },
+  actions: {
+    callSession: function(context) {
+      auth.onAuthStateChanged(data => {
+        context.commit("setSession", data);
+      });
+    },
+    signInWithGoogle: function() {
+      window.console.log("signInWithGoogle" + "" + this.getters.getUser);
+      auth.signInWithPopup(GoogleProvider).then(function(result) {
+        Toast.open({
+          duration: 8000,
+          message: `เข้าสู่ระบบแล้วในชื่อของ ${result.user.displayName}`,
+          position: "is-bottom",
+          type: "is-success"
+        });
+        router.replace("/backend/profile");
+      });
+    },
+    signOut: function() {
+      auth.signOut().then(response => {
+        window.console.log(response);
+        window.console.log(router.currentRoute.path);
+        if (router.currentRoute.path != "/login") {
+          Toast.open("ออกจากระบบแล้ว!");
+          router.replace("/login");
+        } else {
+          Toast.open("ออกจากระบบแล้ว!");
+        }
+      });
+    }
+  },
   modules: {}
 });

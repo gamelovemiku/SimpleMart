@@ -25,19 +25,19 @@
 
         <template slot="end">
           <b-navbar-dropdown
-            v-if="authUser != null"
-            :label="authUser.displayName"
+            v-if="userSession != null"
+            :label="userSession.displayName"
           >
-            <b-navbar-item href="#">
+            <b-navbar-item tag="router-link" to="/backend/itemmanager">
               สินค้า
             </b-navbar-item>
-            <b-navbar-item href="#">
+            <b-navbar-item tag="router-link" to="/backend/itemmanager">
               บัญชี
             </b-navbar-item>
-            <b-navbar-item href="#">
+            <b-navbar-item tag="router-link" to="/backend/itemmanager">
               ระบบขายหน้าร้าน
             </b-navbar-item>
-            <b-navbar-item href="#">
+            <b-navbar-item tag="router-link" to="/backend/itemmanager">
               ประวัติการขาย
             </b-navbar-item>
             <hr class="navbar-divider" />
@@ -45,7 +45,11 @@
               ออกจากระบบ
             </b-navbar-item>
           </b-navbar-dropdown>
-          <b-navbar-item tag="router-link" to="/auth" v-if="authUser == null">
+          <b-navbar-item
+            tag="router-link"
+            to="/auth"
+            v-if="userSession == null"
+          >
             <div class="buttons">
               <a class="button is-primary">
                 สมัครสมาชิก
@@ -109,6 +113,7 @@
                 style="margin-bottom: 0.65rem"
                 size="small"
                 theme="light"
+                @click="testbutton()"
                 full-width
               >
                 เข้าสู่ระบบด้วย GitHub
@@ -122,12 +127,11 @@
 </template>
 
 <script>
-import { auth, GoogleProvider } from "../firebase";
+import { auth } from "../firebase";
 export default {
   data() {
     return {
-      isCardModalActive: false,
-      authUser: null
+      isCardModalActive: false
     };
   },
   methods: {
@@ -154,32 +158,22 @@ export default {
         .finally(() => (this.loading = false));
     },
     signInWithGoogle: function() {
-      window.console.log("signInWithGoogle");
-      auth.signInWithPopup(GoogleProvider).then(function(result) {
-        window.console.log(result.credential.accessToken);
-        window.console.log(result.user);
-      });
-      this.isCardModalActive = false;
-      this.$router.replace("/backend/profile");
+      this.$store.dispatch("signInWithGoogle");
     },
     signOut: function() {
-      auth.signOut().then(result => {
-        window.console.log(result);
-        this.$buefy.snackbar.open({
-          message: "คุณได้ออกจากระบบเรียบร้อยแล้ว",
-          type: "is-success",
-          position: "is-top",
-          actionText: "ไปยังหน้า Login",
-          onAction: () => {
-            this.$router.replace("/login");
-          }
-        });
-        this.$router.replace("/login");
-      });
+      this.$store.dispatch("signOut");
+    },
+    testbutton: function() {
+      window.console.log("LOGGIN AS: " + this.$store.getters.getUser);
+    }
+  },
+  computed: {
+    userSession: function() {
+      return this.$store.getters.getUser;
     }
   },
   mounted() {
-    auth.onAuthStateChanged(data => (this.authUser = data));
+    this.$store.dispatch("callSession");
   }
 };
 </script>

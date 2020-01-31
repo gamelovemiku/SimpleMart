@@ -28,7 +28,7 @@ const routes = [
   },
   {
     path: "/pos",
-    name: "search",
+    name: "pos",
     component: POS
   },
   {
