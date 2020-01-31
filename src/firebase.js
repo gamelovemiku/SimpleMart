@@ -1,7 +1,9 @@
-import { initializeApp } from "firebase";
+import firebase from "firebase";
+import "firebase/app";
 import "firebase/firestore";
+import "firebase/auth";
 
-const firebase = initializeApp({
+const instance = firebase.initializeApp({
   apiKey: "AIzaSyC5Hy5RxbtOVE8-NMq97i2qYLthJF9oAKE",
   authDomain: "simplemart-65f29.firebaseapp.com",
   databaseURL: "https://simplemart-65f29.firebaseio.com",
@@ -12,13 +14,10 @@ const firebase = initializeApp({
   measurementId: "G-70EENL2TXK"
 });
 
-export const db = firebase.firestore();
-export const auth = firebase.auth();
+export const firebaseglobal = instance;
+export const db = instance.firestore();
+export const auth = instance.auth();
 
-/*
-export const db = app.database();
-export const nameRef = db.ref("names");
-
-export const db_firestore = app.firestore();
-export const dataRef = db_firestore.ref("items");
-*/
+export const GoogleProvider = new firebase.auth.GoogleAuthProvider();
+export const FacebookProvider = new firebase.auth.FacebookAuthProvider();
+export const TwitterProvider = new firebase.auth.TwitterAuthProvider();

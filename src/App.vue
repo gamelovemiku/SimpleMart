@@ -36,6 +36,7 @@ export default {
 html,
 div,
 button,
+button.button,
 span {
   font-family: "Segoe UI", "Thonburi", sans-serif;
   -webkit-font-smoothing: antialiased;

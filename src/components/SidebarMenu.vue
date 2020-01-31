@@ -1,67 +1,54 @@
 <template>
   <b-menu>
     <b-message type="is-info">
-      <h6 class="title is-6">POS is in beta!</h6>
+      <h6 class="title is-6">POS กำลังพัฒนาอยู่!</h6>
     </b-message>
-    <b-menu-list label="Menu">
-      <b-menu-item icon="account" label="Profile"></b-menu-item>
+    <b-menu-list label="เมนู">
       <b-menu-item
-        icon="settings"
+        icon="shopping-outline"
         :active="isActive"
         :expanded="isActive"
         @click="isActive = !isActive"
       >
         <template slot="label" slot-scope="props">
-          Item Manager
+          สินค้า
           <b-icon
             class="is-pulled-right"
             :icon="props.expanded ? 'menu-down' : 'menu-up'"
           >
           </b-icon>
         </template>
-        <b-menu-item icon="account" label="Users"></b-menu-item>
-        <b-menu-item icon="cellphone-link">
-          <template slot="label">
-            Devices
-            <b-dropdown
-              aria-role="list"
-              class="is-pulled-right"
-              position="is-bottom-left"
-            >
-              <b-icon icon="dots-vertical" slot="trigger"></b-icon>
-              <b-dropdown-item aria-role="listitem">Action</b-dropdown-item>
-              <b-dropdown-item aria-role="listitem"
-                >Another action</b-dropdown-item
-              >
-              <b-dropdown-item aria-role="listitem"
-                >Something else</b-dropdown-item
-              >
-            </b-dropdown>
-          </template>
-        </b-menu-item>
-        <b-menu-item
-          icon="cash-multiple"
-          label="Payments"
-          disabled
-        ></b-menu-item>
+        <b-menu-item icon="store" label="ภาพรวมสินค้า"></b-menu-item>
+        <b-menu-item icon="warehouse" label="คลังสินค้า"></b-menu-item>
       </b-menu-item>
-      <b-menu-item icon="account" label="My Account">
-        <b-menu-item label="Account data"></b-menu-item>
-        <b-menu-item label="Addresses"></b-menu-item>
+      <b-menu-item icon="account" label="บัญชี">
+        <b-menu-item
+          icon="account-details"
+          label="ข้อมูลส่วนตัว"
+          tag="router-link"
+          to="/backend/profile"
+        ></b-menu-item>
+        <b-menu-item icon="account-key" label="เปลี่ยนรหัสผ่าน"></b-menu-item>
       </b-menu-item>
     </b-menu-list>
     <b-menu-list>
       <b-menu-item
-        label="Expo"
-        icon="link"
+        label="ระบบขายหน้าร้าน"
+        icon="cash-register"
         tag="router-link"
-        target="_blank"
-        to="/expo"
+        to="/pos"
+      >
+      </b-menu-item>
+      <b-menu-item
+        label="ประวัติการขาย"
+        icon="history"
+        tag="router-link"
+        to="/pos"
       >
       </b-menu-item>
     </b-menu-list>
-    <b-menu-list label="Actions">
-      <b-menu-item label="Logout"></b-menu-item>
+    <b-menu-list label="การกระทำ">
+      <b-menu-item icon="logout" label="ออกจากระบบ"></b-menu-item>
     </b-menu-list>
   </b-menu>
 </template>
@@ -72,7 +59,9 @@ export default {
     return {
       isActive: true
     };
-  }
+  },
+  methods: {},
+  mounted() {}
 };
 </script>
 

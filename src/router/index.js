@@ -5,6 +5,8 @@ import Search from "../views/Search.vue";
 import Global from "../views/Global.vue";
 import ItemManager from "../views/backend/ItemManager.vue";
 import Profile from "../views/backend/Profile.vue";
+import Login from "../views/Authentication/Login.vue";
+import POS from "../views/POS.vue";
 
 Vue.use(VueRouter);
 
@@ -23,6 +25,16 @@ const routes = [
     path: "/search",
     name: "search",
     component: Search
+  },
+  {
+    path: "/pos",
+    name: "search",
+    component: POS
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: Login
   },
   {
     path: "/backend/itemmanager",
