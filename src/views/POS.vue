@@ -1,6 +1,7 @@
 <template>
   <section class="section">
-    <div class="container">
+    <div class="container is-fluid">
+      <a class="is-size-7" @click="$router.go(-1)">กลับไปส่วนจัดการสินค้า</a>
       <div class="level">
         <div class="level-left">
           <div>
@@ -24,16 +25,40 @@
         </div>
       </div>
       <div class="columns is-multiline">
-        <div class="column is-3">
-          <div class="box">
+        <div class="column is-2">
+          <div class="boxx">
+            <b-field grouped>
+              <b-field expanded label="บาร์โค๊ด">
+                <b-field>
+                  <b-input
+                    v-model="barcode"
+                    size="is-normal"
+                    v-on:keyup.enter="pushWithBarcode()"
+                    maxlength="13"
+                    expanded
+                  ></b-input>
+                  <p class="control">
+                    <button
+                      class="button is-small is-normal"
+                      @click="pushWithBarcode()"
+                    >
+                      <span class="icon">
+                        <span class="mdi mdi-cart-arrow-down"></span>
+                      </span>
+                    </button>
+                  </p>
+                </b-field>
+              </b-field>
+            </b-field>
             <b-field grouped>
               <b-field label="เงินที่ได้รับ" expanded>
                 <b-field>
-                  <b-input
+                  <b-numberinput
                     v-model="moneypaid"
-                    size="is-large"
+                    size="is-normal"
+                    controls-position="compact"
                     expanded
-                  ></b-input>
+                  ></b-numberinput>
                 </b-field>
               </b-field>
             </b-field>
@@ -77,30 +102,9 @@
             </b-field>
           </div>
         </div>
-        <div class="column is-9">
-          <b-field grouped>
-            <b-field label="Product Barcode" expanded>
-              <b-field>
-                <b-input
-                  v-model="barcode"
-                  size="is-large"
-                  v-on:keyup.enter="pushWithBarcode()"
-                  maxlength="13"
-                  expanded
-                ></b-input>
-                <p class="control">
-                  <button
-                    class="button is-primary is-large"
-                    @click="pushWithBarcode()"
-                  >
-                    เพิ่มลงรายการคิดเงิน
-                  </button>
-                </p>
-              </b-field>
-            </b-field>
-          </b-field>
+        <div class="column is-8">
           <div class="boxx">
-            <table class="table is-fullwidth">
+            <table class="table is-fullwidth is-narrow">
               <thead v-if="carts == []">
                 <tr>
                   <th>Barcode</th>
@@ -119,22 +123,66 @@
                       type="is-danger"
                       size="is-small"
                       @click="removeFromCart(index)"
-                      >Remove</b-button
+                      >เอาออก</b-button
                     >
                   </th>
                 </tr>
                 <tr v-if="carts.length == 0">
                   <th col="4">
-                    <h1 class="title" style="margin-top: 1rem;">
-                      พร้อมสำหรับการคิดเงินครั้งใหม่แล้ว
-                    </h1>
-                    <p class="subtitle">
+                    <h4
+                      class="title is-4 has-text-centered"
+                      style="margin-top: 1rem;"
+                    >
+                      ตะกร้าว่างเปล่า
+                    </h4>
+                    <p class="subtitle is-6 has-text-centered">
                       ตอนนี้ไม่มีอะไรอยู่ในตะกร้านี้เลย
                     </p>
                   </th>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="column is-2">
+          <aside class="menu">
+            <p class="menu-label">
+              <b>สินค้าขายแบบพิเศษ</b>
+            </p>
+            <ul class="menu-list">
+              <li>
+                <a>
+                  <span class="icon is-small">
+                    <i class="mdi mdi-candycane"></i>
+                  </span>
+                  ลูกอม
+                </a>
+              </li>
+              <li>
+                <a>
+                  <span class="icon is-small">
+                    <i class="mdi mdi-egg"></i>
+                  </span>
+                  ไข่
+                </a>
+              </li>
+            </ul>
+            <p class="menu-label">
+              Administration
+            </p>
+          </aside>
+          <hr />
+          <div class="buttons">
+            <b-button
+              class="button is-primary is-fullwidth"
+              @click="saveCart()"
+              outlined
+            >
+              บันทึกการขาย
+            </b-button>
+            <b-button class="button is-primary is-fullwidth" outlined>
+              เพิ่มสินค้าขายแบบพิเศษ
+            </b-button>
           </div>
         </div>
       </div>
@@ -172,11 +220,29 @@ export default {
             window.console.log(doc.data());
             this.carts.push(doc.data());
           }
+          this.barcode = "";
           this.isSearching = false;
         })
         .catch(err => {
           window.console.log("Not found..", err);
           this.isSearching = false;
+        });
+    },
+    saveCart() {
+      window.console.log("Saving data...");
+      let tranaction = {
+        sold: this.carts,
+        totalprice: this.totalPrice
+      };
+      db.collection("sale_history")
+        .add(tranaction)
+        .then(ref => {
+          this.$buefy.snackbar.open({
+            message: `Added cart with ID: ${ref.id}`,
+            type: "is-success",
+            actionText: "เรียบร้อย",
+            queue: false
+          });
         });
     },
     removeFromCart: function(index) {
@@ -196,10 +262,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+section {
+  margin-top: -2rem;
+}
 hr {
-  margin: 0.75rem 0;
+  margin: 2.5rem 2.5rem;
 }
 .card {
   border-radius: 0.35rem;
+}
+
+.menu-label {
+  letter-spacing: 0px;
 }
 </style>

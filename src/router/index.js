@@ -6,6 +6,7 @@ import Global from "../views/Global.vue";
 import ItemManager from "../views/backend/ItemManager.vue";
 import Profile from "../views/backend/Profile.vue";
 import Login from "../views/Authentication/Login.vue";
+import LoggedOut from "../views/Authentication/LoggedOut.vue";
 import POS from "../views/POS.vue";
 
 Vue.use(VueRouter);
@@ -35,6 +36,11 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login
+  },
+  {
+    path: "/loggedout",
+    name: "loggedout",
+    component: LoggedOut
   },
   {
     path: "/backend/itemmanager",

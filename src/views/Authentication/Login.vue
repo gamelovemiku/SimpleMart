@@ -4,18 +4,72 @@
       <div class="columns is-centered">
         <div class="column is-half">
           <div class="card">
-            <h4 class="title is-4">User: {{ authUser.email }}</h4>
-            <pre>{{ authUser }}</pre>
-            <div class="buttons">
-              <b-button type="is-primary" expanded @click="signIn()">
-                เข้าสู่ระบบ
-              </b-button>
-              <b-button type="is-light" expanded @click="signInWithGoogle()">
-                Google
-              </b-button>
-              <b-button type="is-danger" expanded @click="signOut()">
-                SignOut
-              </b-button>
+            <div class="card-content">
+              <div class="columns">
+                <div class="column is-6">
+                  <h4 class="title is-4">Login</h4>
+                  <p class="subtitle is-6">เข้าสู่ระบบ</p>
+                  <b-field label="Username">
+                    <b-input value="johnsilver" maxlength="30"></b-input>
+                  </b-field>
+
+                  <b-field label="Password">
+                    <b-input
+                      value="123"
+                      type="password"
+                      maxlength="30"
+                    ></b-input>
+                  </b-field>
+
+                  <div class="buttons">
+                    <b-button type="is-primary" expanded @click="signIn()">
+                      เข้าสู่ระบบ
+                    </b-button>
+                    <b-button type="is-text is-small" expanded>
+                      ยังไม่ได้เป็นสมาชิก?
+                    </b-button>
+                    <b-button @click="signInWithGoogle()">
+                      Google
+                    </b-button>
+                  </div>
+                </div>
+                <div class="column is-6">
+                  <h4 class="title is-4">Login with Social</h4>
+                  <p class="subtitle is-6">เข้าสู่ระบบผ่านโซเชียลเน็ตเวิร์ค</p>
+                  <gb-social-button
+                    iconPath="/assets/icons"
+                    network="facebook"
+                    style="margin-bottom: 0.5rem"
+                    size="small"
+                    theme="light"
+                    @click="$store.dispatch('signInWithFacebook')"
+                    full-width
+                  >
+                    เข้าสู่ระบบด้วย Facebook
+                  </gb-social-button>
+                  <gb-social-button
+                    iconPath="/assets/icons"
+                    network="google"
+                    style="margin-bottom: 0.5rem"
+                    size="small"
+                    theme="light"
+                    @click="signInWithGoogle()"
+                    full-width
+                  >
+                    เข้าสู่ระบบด้วย Google
+                  </gb-social-button>
+                  <gb-social-button
+                    iconPath="/assets/icons"
+                    network="github"
+                    style="margin-bottom: 0.5rem"
+                    size="small"
+                    theme="light"
+                    full-width
+                  >
+                    เข้าสู่ระบบด้วย GitHub
+                  </gb-social-button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -57,7 +111,15 @@ export default {
           user => {
             window.console.log(user);
           },
-          err => window.console.log("Error! ", `${err.message}`, "error")
+          err => {
+            this.$buefy.toast.open({
+              duration: 8000,
+              message: `${err.message}`,
+              position: "is-bottom",
+              type: "is-danger"
+            });
+            window.console.log("Error:", `${err.message}`, "error");
+          }
         )
         .finally(() => (this.loading = false));
     },
@@ -66,10 +128,13 @@ export default {
     },
     signInWithGoogle: function() {
       this.$store.dispatch("signInWithGoogle");
+    },
+    signInWithFacebook: function() {
+      this.$store.dispatch("signInWithFacebook");
     }
   },
   mounted() {
-    auth.onAuthStateChanged(data => (this.authUser = data));
+    this.$store.dispatch("callSession");
   }
 };
 </script>

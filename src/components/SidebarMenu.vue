@@ -3,35 +3,30 @@
     <b-message type="is-info">
       <h6 class="title is-6">POS กำลังพัฒนาอยู่!</h6>
     </b-message>
-    <b-menu-list label="เมนู">
-      <b-menu-item
-        icon="shopping-outline"
-        :active="isActive"
-        :expanded="isActive"
-        @click="isActive = !isActive"
-      >
-        <template slot="label" slot-scope="props">
-          สินค้า
-          <b-icon
-            class="is-pulled-right"
-            :icon="props.expanded ? 'menu-down' : 'menu-up'"
-          >
-          </b-icon>
-        </template>
-        <b-menu-item icon="store" label="ภาพรวมสินค้า"></b-menu-item>
-        <b-menu-item icon="warehouse" label="คลังสินค้า"></b-menu-item>
-      </b-menu-item>
-      <b-menu-item icon="account" label="บัญชี">
-        <b-menu-item
-          icon="account-details"
-          label="ข้อมูลส่วนตัว"
-          tag="router-link"
-          to="/backend/profile"
-        ></b-menu-item>
-        <b-menu-item icon="account-key" label="เปลี่ยนรหัสผ่าน"></b-menu-item>
-      </b-menu-item>
-    </b-menu-list>
+    <b-menu-list label="เมนู"></b-menu-list>
     <b-menu-list>
+      <b-menu-item
+        label="สินค้า"
+        icon="store"
+        tag="router-link"
+        to="/backend/itemmanager"
+      >
+      </b-menu-item>
+      <b-menu-item
+        label="ข้อมูลส่วนตัว"
+        icon="account-details"
+        tag="router-link"
+        to="/backend/profile"
+      >
+      </b-menu-item>
+      <b-menu-list label="การบริหาร"></b-menu-list>
+      <b-menu-item
+        label="ภาพรวม"
+        icon="view-dashboard"
+        tag="router-link"
+        to="/backend/dashboard"
+      >
+      </b-menu-item>
       <b-menu-item
         label="ระบบขายหน้าร้าน"
         icon="cash-register"
@@ -67,7 +62,7 @@ export default {
 
 <style>
 .menu {
-  padding: 0px 1.75rem 0px 1.75rem;
+  padding: 0px 1rem 0px 1rem;
 }
 .menu-list {
   border-radius: 0.75rem 2rem 2rem 0.75rem;
