@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <div class="container is-fluid">
+    <div class="container">
       <a class="is-size-7" @click="$router.go(-1)">กลับไปส่วนจัดการสินค้า</a>
       <div class="level">
         <div class="level-left">
@@ -191,7 +191,7 @@
 </template>
 
 <script>
-import { db } from "../firebase";
+import { db, timestamp } from "../firebase";
 
 export default {
   data() {
@@ -232,7 +232,9 @@ export default {
       window.console.log("Saving data...");
       let tranaction = {
         sold: this.carts,
-        totalprice: this.totalPrice
+        totalprice: this.totalPrice,
+        sold_by: this.$store.getters.getUser.displayName,
+        date: timestamp.now()
       };
       db.collection("sale_history")
         .add(tranaction)

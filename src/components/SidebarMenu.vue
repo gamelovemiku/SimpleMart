@@ -38,7 +38,7 @@
         label="ประวัติการขาย"
         icon="history"
         tag="router-link"
-        to="/pos"
+        to="/backend/history"
       >
       </b-menu-item>
     </b-menu-list>

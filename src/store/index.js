@@ -28,9 +28,14 @@ export default new Vuex.Store({
   },
   actions: {
     callSession: function(context) {
-      auth.onAuthStateChanged(data => {
-        context.commit("setSession", data);
-      });
+      auth
+        .onAuthStateChanged(data => {
+          context.commit("setSession", data);
+        })
+        .then(err => {
+          window.console.log(err);
+          context.commit("setSession", null);
+        });
     },
     signInWithGoogle: function() {
       window.console.log("signInWithGoogle" + "" + this.getters.getUser);
@@ -41,7 +46,7 @@ export default new Vuex.Store({
           position: "is-bottom",
           type: "is-success"
         });
-        router.replace("/backend/profile");
+        router.replace("/");
       });
     },
     signInWithFacebook: function() {

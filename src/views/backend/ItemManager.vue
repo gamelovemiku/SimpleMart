@@ -1,231 +1,213 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <div class="columns is-multiline">
-        <div class="column is-3">
-          <SidebarMenu></SidebarMenu>
-        </div>
-        <div class="column is-9">
-          <h3 class="title is-3">สินค้า</h3>
-          <p class="subtitle is-4">สำหรับจัดการสินค้าที่มีอยู่ในร้านของคุณ</p>
-          <b-tabs class="block">
-            <b-tab-item label="ภาพรวมร้านค้า" icon="chart-histogram">
-              <h1 class="title is-1">
-                สินค้าทั้งหมด {{ items.length }} ชิ้น ในระบบ
-              </h1>
-            </b-tab-item>
-            <b-tab-item label="คลังสินค้า" icon="shape">
-              <div class="columns is-multiline">
-                <div class="column is-8">
-                  <div class="buttons is-spaceless">
+  <section>
+    <h3 class="title is-3">สินค้า</h3>
+    <p class="subtitle is-4">สำหรับจัดการสินค้าที่มีอยู่ในร้านของคุณ</p>
+    <b-tabs class="block">
+      <b-tab-item label="ภาพรวมร้านค้า" icon="chart-histogram">
+        <h1 class="title is-1">สินค้าทั้งหมด {{ items.length }} ชิ้น ในระบบ</h1>
+      </b-tab-item>
+      <b-tab-item label="คลังสินค้า" icon="shape">
+        <div class="columns is-multiline">
+          <div class="column is-8">
+            <div class="buttons is-spaceless">
+              <b-button
+                v-if="selected != null"
+                @click="removeItem()"
+                :loading="isDeleting"
+                type="is-danger"
+                outlined
+              >
+                ลบที่เลือก
+              </b-button>
+              <b-button
+                v-if="selected == null"
+                type="is-danger"
+                disabled
+                outlined
+              >
+                ลบที่เลือก
+              </b-button>
+              <b-button
+                v-if="selected != null"
+                @click="modalEdit = true"
+                type="is-warning"
+                outlined
+              >
+                แก้ไขที่เลือก
+              </b-button>
+              <b-button
+                v-if="selected == null"
+                type="is-warning"
+                disabled
+                outlined
+              >
+                แก้ไขที่เลือก
+              </b-button>
+              <b-button
+                v-if="selected != null"
+                @click="selected = null"
+                type="is-black"
+                outlined
+              >
+                ยกเลิกการเลือก
+              </b-button>
+              <b-button
+                v-if="selected == null"
+                type="is-black"
+                disabled
+                outlined
+              >
+                ยกเลิกการเลือก
+              </b-button>
+            </div>
+            <b-table
+              :data="items"
+              :columns="columns"
+              :selected.sync="selected"
+              :loading="isLoading"
+              paginated="true"
+              per-page="10"
+              pagination-simple="false"
+              narrowed
+            ></b-table>
+          </div>
+          <div class="column is-4">
+            <div class="card">
+              <div class="card-content">
+                <h4 class="title is-4">เพิ่มสินค้าใหม่</h4>
+                <form @submit="addItem">
+                  <b-field label="Barcode">
+                    <b-input v-model="form.barcode" maxlength="13"></b-input>
+                  </b-field>
+                  <b-field label="Category">
+                    <b-select
+                      v-model="form.category"
+                      placeholder="Category"
+                      expanded
+                    >
+                      <option value="Baverage">Baverage</option>
+                      <option value="Food">Food</option>
+                      <option value="General">General</option>
+                    </b-select>
+                  </b-field>
+                  <b-field label="Short Description">
+                    <b-input
+                      rows="2"
+                      v-model="form.description"
+                      maxlength="32"
+                    ></b-input>
+                  </b-field>
+                  <b-field label="Price">
+                    <b-numberinput
+                      v-model="form.price"
+                      expanded
+                      controlsPosition="compact"
+                      min="0"
+                    />
+                  </b-field>
+                  <div class="buttons">
                     <b-button
-                      v-if="selected != null"
-                      @click="removeItem()"
-                      :loading="isDeleting"
-                      type="is-danger"
+                      v-if="form.barcode != ''"
+                      type="is-primary"
+                      native-type="submit"
+                      :loading="isProcessing"
+                      expanded
                       outlined
                     >
-                      ลบที่เลือก
+                      เพิ่มสินค้าใหม่
                     </b-button>
                     <b-button
-                      v-if="selected == null"
-                      type="is-danger"
+                      v-if="form.barcode == ''"
+                      type="is-primary"
+                      native-type="submit"
+                      expanded
                       disabled
                       outlined
                     >
-                      ลบที่เลือก
-                    </b-button>
-                    <b-button
-                      v-if="selected != null"
-                      @click="modalEdit = true"
-                      type="is-warning"
-                      outlined
-                    >
-                      แก้ไขที่เลือก
-                    </b-button>
-                    <b-button
-                      v-if="selected == null"
-                      type="is-warning"
-                      disabled
-                      outlined
-                    >
-                      แก้ไขที่เลือก
-                    </b-button>
-                    <b-button
-                      v-if="selected != null"
-                      @click="selected = null"
-                      type="is-black"
-                      outlined
-                    >
-                      ยกเลิกการเลือก
-                    </b-button>
-                    <b-button
-                      v-if="selected == null"
-                      type="is-black"
-                      disabled
-                      outlined
-                    >
-                      ยกเลิกการเลือก
+                      เพิ่มสินค้าใหม่
                     </b-button>
                   </div>
-                  <b-table
-                    :data="items"
-                    :columns="columns"
-                    :selected.sync="selected"
-                    :loading="isLoading"
-                    paginated="true"
-                    per-page="10"
-                    pagination-simple="false"
-                    narrowed
-                  ></b-table>
-                </div>
-                <div class="column is-4">
-                  <div class="card">
-                    <div class="card-content">
-                      <h4 class="title is-4">เพิ่มสินค้าใหม่</h4>
-                      <form @submit="addItem">
-                        <b-field label="Barcode">
-                          <b-input
-                            v-model="form.barcode"
-                            maxlength="13"
-                          ></b-input>
-                        </b-field>
-                        <b-field label="Category">
-                          <b-select
-                            v-model="form.category"
-                            placeholder="Category"
-                            expanded
-                          >
-                            <option value="Baverage">Baverage</option>
-                            <option value="Food">Food</option>
-                            <option value="General">General</option>
-                          </b-select>
-                        </b-field>
-                        <b-field label="Short Description">
-                          <b-input
-                            rows="2"
-                            v-model="form.description"
-                            maxlength="32"
-                          ></b-input>
-                        </b-field>
-                        <b-field label="Price">
-                          <b-numberinput
-                            v-model="form.price"
-                            expanded
-                            controlsPosition="compact"
-                            min="0"
-                          />
-                        </b-field>
-                        <div class="buttons">
-                          <b-button
-                            v-if="form.barcode != ''"
-                            type="is-primary"
-                            native-type="submit"
-                            :loading="isProcessing"
-                            expanded
-                            outlined
-                          >
-                            เพิ่มสินค้าใหม่
-                          </b-button>
-                          <b-button
-                            v-if="form.barcode == ''"
-                            type="is-primary"
-                            native-type="submit"
-                            expanded
-                            disabled
-                            outlined
-                          >
-                            เพิ่มสินค้าใหม่
-                          </b-button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
+                </form>
               </div>
-            </b-tab-item>
-          </b-tabs>
-        </div>
-      </div>
-      <b-modal
-        v-if="selected != null"
-        :active.sync="modalEdit"
-        :width="360"
-        scroll="keep"
-      >
-        <div class="card">
-          <div class="card-content">
-            <h3 class="title is-5">แก้ไขสินค้า</h3>
-            <p class="subtitle is-6" v-once>{{ selected.description }}</p>
-            <form @submit="editItem">
-              <b-field label="Barcode">
-                <b-input v-model="selected.barcode" maxlength="13"></b-input>
-              </b-field>
-              <b-field label="Category">
-                <b-select
-                  v-model="selected.category"
-                  placeholder="Category"
-                  expanded
-                >
-                  <option value="Baverage">Baverage</option>
-                  <option value="Food">Food</option>
-                  <option value="General">General</option>
-                </b-select>
-              </b-field>
-              <b-field label="Short Description">
-                <b-input
-                  rows="2"
-                  v-model="selected.description"
-                  maxlength="32"
-                ></b-input>
-              </b-field>
-              <b-field label="Price">
-                <b-numberinput
-                  v-model="selected.price"
-                  expanded
-                  controlsPosition="compact"
-                  min="0"
-                />
-              </b-field>
-              <div class="buttons">
-                <b-button
-                  v-if="selected.barcode != ''"
-                  type="is-primary"
-                  native-type="submit"
-                  :loading="isEditing"
-                  expanded
-                  outlined
-                >
-                  แก้ไขข้อมูลของ
-                  <small>{{ selected.barcode }}</small>
-                </b-button>
-                <b-button
-                  v-if="selected.barcode == ''"
-                  type="is-primary"
-                  native-type="submit"
-                  expanded
-                  disabled
-                  outlined
-                >
-                  แก้ไข
-                </b-button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
-      </b-modal>
-    </div>
+      </b-tab-item>
+    </b-tabs>
+    <b-modal
+      v-if="selected != null"
+      :active.sync="modalEdit"
+      :width="360"
+      scroll="keep"
+    >
+      <div class="card">
+        <div class="card-content">
+          <h3 class="title is-5">แก้ไขสินค้า</h3>
+          <p class="subtitle is-6" v-once>{{ selected.description }}</p>
+          <form @submit="editItem">
+            <b-field label="Barcode">
+              <b-input v-model="selected.barcode" maxlength="13"></b-input>
+            </b-field>
+            <b-field label="Category">
+              <b-select
+                v-model="selected.category"
+                placeholder="Category"
+                expanded
+              >
+                <option value="Baverage">Baverage</option>
+                <option value="Food">Food</option>
+                <option value="General">General</option>
+              </b-select>
+            </b-field>
+            <b-field label="Short Description">
+              <b-input
+                rows="2"
+                v-model="selected.description"
+                maxlength="32"
+              ></b-input>
+            </b-field>
+            <b-field label="Price">
+              <b-numberinput
+                v-model="selected.price"
+                expanded
+                controlsPosition="compact"
+                min="0"
+              />
+            </b-field>
+            <div class="buttons">
+              <b-button
+                v-if="selected.barcode != ''"
+                type="is-primary"
+                native-type="submit"
+                :loading="isEditing"
+                expanded
+                outlined
+              >
+                แก้ไขข้อมูลของ
+                <small>{{ selected.barcode }}</small>
+              </b-button>
+              <b-button
+                v-if="selected.barcode == ''"
+                type="is-primary"
+                native-type="submit"
+                expanded
+                disabled
+                outlined
+              >
+                แก้ไข
+              </b-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </b-modal>
   </section>
 </template>
 
 <script>
 import { db } from "../../firebase";
-import SidebarMenu from "../../components/SidebarMenu.vue";
 
 export default {
-  components: {
-    SidebarMenu
-  },
   data() {
     return {
       form: {
