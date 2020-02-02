@@ -36,7 +36,11 @@
       </b-menu-item>
     </b-menu-list>
     <b-menu-list label="การกระทำ">
-      <b-menu-item icon="logout" label="ออกจากระบบ" @click="$store.dispatch('signOut')"></b-menu-item>
+      <b-menu-item
+        icon="logout"
+        label="ออกจากระบบ"
+        @click="$store.dispatch('signOut')"
+      ></b-menu-item>
     </b-menu-list>
   </b-menu>
 </template>
@@ -65,6 +69,9 @@ export default {
 }
 .menu-list a.is-active {
   border-radius: 0.75rem 2rem 2rem 0.75rem;
+}
+.menu-label {
+  letter-spacing: 0px;
 }
 </style>
 

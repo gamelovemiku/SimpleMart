@@ -2,7 +2,12 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "./../router";
 import { ToastProgrammatic as Toast } from "buefy";
-import { auth, GoogleProvider, FacebookProvider, TwitterProvider } from "../firebase";
+import {
+  auth,
+  GoogleProvider,
+  FacebookProvider,
+  TwitterProvider
+} from "../firebase";
 
 Vue.use(Vuex);
 
@@ -92,7 +97,7 @@ export default new Vuex.Store({
     closeModal: function(context) {
       window.console.log("CLOSE");
       context.commit("IS_MODAL_OPEN", false);
-    },
+    }
   },
   modules: {}
 });

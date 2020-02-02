@@ -23,7 +23,7 @@
             tag="router-link"
             :to="{ path: '/backend/itemmanager' }"
           >
-            <a class="button is-info">จัดการสินค้า</a> 
+            <a class="button is-info">จัดการสินค้า</a>
           </b-navbar-item>
           <b-navbar-dropdown
             v-if="userSession != null"
@@ -63,7 +63,11 @@
       </b-navbar>
     </div>
 
-    <b-modal :active.sync="$store.state.navbar.authModalOpen" :width="360" scroll="keep">
+    <b-modal
+      :active.sync="$store.state.navbar.authModalOpen"
+      :width="360"
+      scroll="keep"
+    >
       <div class="card">
         <div class="card-content">
           <div class="columns">

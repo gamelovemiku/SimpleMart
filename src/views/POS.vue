@@ -6,15 +6,17 @@
         <div class="level-left">
           <div>
             <h4 class="title is-4">
-              Point of Sale
-              <b-icon
-                pack="fas"
-                icon="sync-alt"
-                custom-class="fa-spin fa-xs"
-                v-show="isLoading == true"
-              ></b-icon>
+              ระบบขายหน้าร้าน
             </h4>
-            <p class="subtitle is-6">ระบบคำนวณราคาสินค้า</p>
+            <p class="subtitle is-6" v-if="isSearching == false">
+              <b-icon icon="clock-out" size="is-small"></b-icon>
+              ยังไม่มีกิจกรรมใดๆ เกิดขึ้น
+            </p>
+            <p class="subtitle is-6" v-if="isSearching == true">
+              <b-icon icon="dots-horizontal" size="is-small"></b-icon>
+              กำลังเรียกข้อมูลสินค้าจากฐานข้อมูล
+              <small>(รหัสบาร์โค๊ด {{ barcode }})</small>
+            </p>
           </div>
         </div>
         <div class="level-right">
@@ -30,20 +32,24 @@
             <b-field grouped>
               <b-field expanded label="บาร์โค๊ด">
                 <b-field>
-                  <input
+                  <b-input
                     v-model="barcode"
-                    class="button is-normal"
-                    @keyup.enter="pushWithBarcode"
+                    size="is-normal"
+                    v-on:keyup.enter="pushWithBarcode()"
+                    maxlength="13"
+                    expanded
+                    @keyup.native.enter="pushWithBarcode"
                   />
                   <p class="control">
-                    <button
+                    <b-button
                       class="button is-small is-normal"
                       @click="pushWithBarcode()"
+                      :loading="isSearching"
                     >
                       <span class="icon">
                         <span class="mdi mdi-cart-arrow-down"></span>
                       </span>
-                    </button>
+                    </b-button>
                   </p>
                 </b-field>
               </b-field>
@@ -172,14 +178,20 @@
           <hr />
           <div class="buttons">
             <b-button
+              v-if="carts.length > 0"
               class="button is-primary is-fullwidth"
               @click="saveCart()"
               outlined
             >
               บันทึกการขาย
             </b-button>
-            <b-button class="button is-primary is-fullwidth" outlined>
-              เพิ่มสินค้าขายแบบพิเศษ
+            <b-button
+              v-if="carts.length == 0"
+              class="button is-primary is-fullwidth"
+              outlined
+              disabled
+            >
+              บันทึกการขาย
             </b-button>
           </div>
         </div>
@@ -201,23 +213,27 @@ export default {
       items: [],
       carts: [],
       isLoading: true,
-      isSearching: true
+      isSearching: false
     };
   },
   methods: {
     pushWithBarcode() {
       window.console.log("Getting data...");
+      this.$buefy.toast.open({
+        message: `กำลังเรียกข้อมูลสินค้าจากฐานข้อมูล สำหรับรหัส ${this.barcode}`,
+        type: "is-warning"
+      });
       this.isSearching = true;
       db.collection("items")
         .where("barcode", "==", this.barcode)
         .get()
         .then(querySnapshot => {
+          this.barcode = "";
           let docs = querySnapshot.docs;
           for (let doc of docs) {
             window.console.log(doc.data());
             this.carts.push(doc.data());
           }
-          this.barcode = "";
           this.isSearching = false;
         })
         .catch(err => {
@@ -227,22 +243,31 @@ export default {
     },
     saveCart() {
       window.console.log("Saving data...");
-      let tranaction = {
-        sold: this.carts,
-        totalprice: this.totalPrice,
-        sold_by: this.$store.getters.getUser.displayName,
-        date: timestamp.now()
-      };
-      db.collection("sale_history")
-        .add(tranaction)
-        .then(ref => {
-          this.$buefy.snackbar.open({
-            message: `Added cart with ID: ${ref.id}`,
-            type: "is-success",
-            actionText: "เรียบร้อย",
-            queue: false
-          });
-        });
+      this.$buefy.dialog.confirm({
+        title: "บันทึกรายการขาย",
+        message: "คุณต้องการบันทึกรายการขายในตะกร้านี้หรือไม่",
+        cancelText: "ยกเลิก",
+        confirmText: "บันทึกรายการขายนี้",
+        onConfirm: () => {
+          let tranaction = {
+            sold: this.carts,
+            totalprice: this.totalPrice,
+            sold_by: this.$store.getters.getUser.displayName,
+            date: timestamp.now()
+          };
+          db.collection("sale_history")
+            .add(tranaction)
+            .then(ref => {
+              this.$buefy.snackbar.open({
+                message: `บันทึกรายการขายเรียบร้อยแล้ว <br/><small>รหัสอ้างอิง: ${ref.id}</small>`,
+                type: "is-success",
+                actionText: "เรียบร้อย",
+                queue: false
+              });
+              this.carts = [];
+            });
+        }
+      });
     },
     removeFromCart: function(index) {
       this.$delete(this.carts, index);
