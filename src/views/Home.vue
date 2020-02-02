@@ -20,6 +20,9 @@
           ระบบ Point of sale
         </b-dropdown-item>
       </b-dropdown>
+      <div v-if="$store.getters.getUser != null">
+        <p class="subtitle is-4">เข้าสู่ระบบแล้ว</p>
+      </div>
     </div>
   </section>
 </template>

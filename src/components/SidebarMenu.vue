@@ -21,13 +21,6 @@
       </b-menu-item>
       <b-menu-list label="การบริหาร"></b-menu-list>
       <b-menu-item
-        label="ภาพรวม"
-        icon="view-dashboard"
-        tag="router-link"
-        to="/backend/dashboard"
-      >
-      </b-menu-item>
-      <b-menu-item
         label="ระบบขายหน้าร้าน"
         icon="cash-register"
         tag="router-link"
@@ -43,7 +36,7 @@
       </b-menu-item>
     </b-menu-list>
     <b-menu-list label="การกระทำ">
-      <b-menu-item icon="logout" label="ออกจากระบบ"></b-menu-item>
+      <b-menu-item icon="logout" label="ออกจากระบบ" @click="$store.dispatch('signOut')"></b-menu-item>
     </b-menu-list>
   </b-menu>
 </template>

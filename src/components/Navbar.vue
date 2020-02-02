@@ -13,17 +13,18 @@
             สินค้าทั้งหมด
           </b-navbar-item>
           <b-navbar-item tag="router-link" :to="{ path: '/search' }">
-            ค้นหารายละเอียดสินค้า
-          </b-navbar-item>
-          <b-navbar-item
-            tag="router-link"
-            :to="{ path: '/backend/itemmanager' }"
-          >
-            จัดการสินค้า
+            ค้นหาสินค้า
           </b-navbar-item>
         </template>
 
         <template slot="end">
+          <b-navbar-item
+            v-if="userSession != null"
+            tag="router-link"
+            :to="{ path: '/backend/itemmanager' }"
+          >
+            <a class="button is-info">จัดการสินค้า</a> 
+          </b-navbar-item>
           <b-navbar-dropdown
             v-if="userSession != null"
             :label="userSession.displayName"
@@ -31,13 +32,13 @@
             <b-navbar-item tag="router-link" to="/backend/itemmanager">
               สินค้า
             </b-navbar-item>
-            <b-navbar-item tag="router-link" to="/backend/itemmanager">
+            <b-navbar-item tag="router-link" to="/backend/profile">
               บัญชี
             </b-navbar-item>
-            <b-navbar-item tag="router-link" to="/backend/itemmanager">
+            <b-navbar-item tag="router-link" to="/pos">
               ระบบขายหน้าร้าน
             </b-navbar-item>
-            <b-navbar-item tag="router-link" to="/backend/itemmanager">
+            <b-navbar-item tag="router-link" to="/backend/history">
               ประวัติการขาย
             </b-navbar-item>
             <hr class="navbar-divider" />
@@ -45,16 +46,15 @@
               ออกจากระบบ
             </b-navbar-item>
           </b-navbar-dropdown>
-          <b-navbar-item
-            tag="router-link"
-            to="/auth"
-            v-if="userSession == null"
-          >
+          <b-navbar-item v-if="userSession == null">
             <div class="buttons">
               <a class="button is-primary">
                 สมัครสมาชิก
               </a>
-              <a class="button is-light" @click="isCardModalActive = true">
+              <a
+                class="button is-light"
+                @click="$store.state.navbar.authModalOpen = true"
+              >
                 เข้าสู่ระบบ
               </a>
             </div>
@@ -63,11 +63,7 @@
       </b-navbar>
     </div>
 
-    <b-modal
-      :active.sync="$store.getters.isAuthModalOpen"
-      :width="360"
-      scroll="keep"
-    >
+    <b-modal :active.sync="$store.state.navbar.authModalOpen" :width="360" scroll="keep">
       <div class="card">
         <div class="card-content">
           <div class="columns">
@@ -86,7 +82,7 @@
                 <b-button type="is-text is-small">
                   ยังไม่ได้เป็นสมาชิก?
                 </b-button>
-                <b-button type="is-primary" @click="signInWithGoogle()">
+                <b-button type="is-primary" @click="signIn()">
                   เข้าสู่ระบบ
                 </b-button>
               </div>
@@ -96,6 +92,7 @@
                 style="margin-bottom: 0.65rem"
                 size="small"
                 theme="light"
+                @click="$store.dispatch('signInWithFacebook')"
                 full-width
               >
                 เข้าสู่ระบบด้วย Facebook
@@ -106,10 +103,21 @@
                 style="margin-bottom: 0.65rem"
                 size="small"
                 theme="light"
-                @click="signInWithGoogle()"
+                @click="$store.dispatch('signInWithGoogle')"
                 full-width
               >
                 เข้าสู่ระบบด้วย Google
+              </gb-social-button>
+              <gb-social-button
+                iconPath="/assets/icons"
+                network="twitter"
+                style="margin-bottom: 0.65rem"
+                size="small"
+                theme="light"
+                @click="$store.dispatch('signInWithTwitter')"
+                full-width
+              >
+                เข้าสู่ระบบด้วย Twitter
               </gb-social-button>
             </div>
           </div>
@@ -158,6 +166,7 @@ export default {
     },
     testbutton: function() {
       window.console.log("LOGGIN AS: " + this.$store.getters.getUser);
+      window.console.log("MODAL: " + this.$store.getters.isAuthModalOpen);
     }
   },
   computed: {
@@ -167,7 +176,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("callSession");
-    this.$store.state.navbar.authModalOpen == false;
   }
 };
 </script>

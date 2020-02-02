@@ -30,13 +30,11 @@
             <b-field grouped>
               <b-field expanded label="บาร์โค๊ด">
                 <b-field>
-                  <b-input
+                  <input
                     v-model="barcode"
-                    size="is-normal"
-                    v-on:keyup.enter="pushWithBarcode()"
-                    maxlength="13"
-                    expanded
-                  ></b-input>
+                    class="button is-normal"
+                    @keyup.enter="pushWithBarcode"
+                  />
                   <p class="control">
                     <button
                       class="button is-small is-normal"
@@ -210,7 +208,6 @@ export default {
     pushWithBarcode() {
       window.console.log("Getting data...");
       this.isSearching = true;
-
       db.collection("items")
         .where("barcode", "==", this.barcode)
         .get()

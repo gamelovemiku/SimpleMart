@@ -28,9 +28,6 @@
                     <b-button type="is-text is-small" expanded>
                       ยังไม่ได้เป็นสมาชิก?
                     </b-button>
-                    <b-button @click="signInWithGoogle()">
-                      Google
-                    </b-button>
                   </div>
                 </div>
                 <div class="column is-6">
@@ -53,20 +50,21 @@
                     style="margin-bottom: 0.5rem"
                     size="small"
                     theme="light"
-                    @click="signInWithGoogle()"
+                    @click="$store.dispatch('signInWithGoogle')"
                     full-width
                   >
                     เข้าสู่ระบบด้วย Google
                   </gb-social-button>
                   <gb-social-button
                     iconPath="/assets/icons"
-                    network="github"
+                    network="twitter"
                     style="margin-bottom: 0.5rem"
                     size="small"
                     theme="light"
+                    @click="$store.dispatch('signInWithTwitter')"
                     full-width
                   >
-                    เข้าสู่ระบบด้วย GitHub
+                    เข้าสู่ระบบด้วย Twitter
                   </gb-social-button>
                 </div>
               </div>
@@ -122,15 +120,6 @@ export default {
           }
         )
         .finally(() => (this.loading = false));
-    },
-    signOut: function() {
-      this.$store.dispatch("signOut");
-    },
-    signInWithGoogle: function() {
-      this.$store.dispatch("signInWithGoogle");
-    },
-    signInWithFacebook: function() {
-      this.$store.dispatch("signInWithFacebook");
     }
   },
   mounted() {

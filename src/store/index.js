@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "./../router";
 import { ToastProgrammatic as Toast } from "buefy";
-import { auth, GoogleProvider, FacebookProvider } from "../firebase";
+import { auth, GoogleProvider, FacebookProvider, TwitterProvider } from "../firebase";
 
 Vue.use(Vuex);
 
@@ -25,9 +25,9 @@ export default new Vuex.Store({
     setSession(state, value) {
       state.user = value;
     },
-    setLoginModal(state, value) {
+    IS_MODAL_OPEN(state, value) {
       state.navbar.authModalOpen = value;
-    },
+    }
   },
   actions: {
     callSession: function(context) {
@@ -40,7 +40,7 @@ export default new Vuex.Store({
           context.commit("setSession", null);
         });
     },
-    signInWithGoogle: function() {
+    signInWithGoogle: function(context) {
       window.console.log("signInWithGoogle" + "" + this.getters.getUser);
       auth.signInWithPopup(GoogleProvider).then(function(result) {
         Toast.open({
@@ -49,11 +49,12 @@ export default new Vuex.Store({
           position: "is-bottom",
           type: "is-success"
         });
+        context.commit("IS_MODAL_OPEN", false);
         router.replace("/");
       });
     },
-    signInWithFacebook: function() {
-      window.console.log("signInWithGoogle" + "" + this.getters.getUser);
+    signInWithFacebook: function(context) {
+      window.console.log("signInWithFacebook");
       auth.signInWithPopup(FacebookProvider).then(function(result) {
         Toast.open({
           duration: 8000,
@@ -61,6 +62,20 @@ export default new Vuex.Store({
           position: "is-bottom",
           type: "is-success"
         });
+        context.commit("IS_MODAL_OPEN", false);
+        router.replace("/backend/profile");
+      });
+    },
+    signInWithTwitter: function(context) {
+      window.console.log("signInWithTwitter");
+      auth.signInWithPopup(TwitterProvider).then(function(result) {
+        Toast.open({
+          duration: 8000,
+          message: `เข้าสู่ระบบแล้วในชื่อของ ${result.user.displayName}`,
+          position: "is-bottom",
+          type: "is-success"
+        });
+        context.commit("IS_MODAL_OPEN", false);
         router.replace("/backend/profile");
       });
     },
@@ -73,7 +88,11 @@ export default new Vuex.Store({
         }
         Toast.open("ออกจากระบบแล้ว!");
       });
-    }
+    },
+    closeModal: function(context) {
+      window.console.log("CLOSE");
+      context.commit("IS_MODAL_OPEN", false);
+    },
   },
   modules: {}
 });
