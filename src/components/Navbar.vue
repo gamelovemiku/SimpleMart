@@ -63,7 +63,11 @@
       </b-navbar>
     </div>
 
-    <b-modal :active.sync="isCardModalActive" :width="360" scroll="keep">
+    <b-modal
+      :active.sync="$store.getters.isAuthModalOpen"
+      :width="360"
+      scroll="keep"
+    >
       <div class="card">
         <div class="card-content">
           <div class="columns">
@@ -106,17 +110,6 @@
                 full-width
               >
                 เข้าสู่ระบบด้วย Google
-              </gb-social-button>
-              <gb-social-button
-                iconPath="/assets/icons"
-                network="github"
-                style="margin-bottom: 0.65rem"
-                size="small"
-                theme="light"
-                @click="testbutton()"
-                full-width
-              >
-                เข้าสู่ระบบด้วย GitHub
               </gb-social-button>
             </div>
           </div>
@@ -174,6 +167,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch("callSession");
+    this.$store.state.navbar.authModalOpen == false;
   }
 };
 </script>

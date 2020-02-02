@@ -24,7 +24,10 @@ export default new Vuex.Store({
   mutations: {
     setSession(state, value) {
       state.user = value;
-    }
+    },
+    setLoginModal(state, value) {
+      state.navbar.authModalOpen = value;
+    },
   },
   actions: {
     callSession: function(context) {
