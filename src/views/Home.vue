@@ -13,15 +13,26 @@
           <b-icon icon="menu-down"></b-icon>
         </button>
 
-        <b-dropdown-item aria-role="listitem">
-          ค้นหารายละเอียดสินค้า
+        <b-dropdown-item
+          aria-role="listitem"
+          @click="$router.replace('/search')"
+        >
+          ค้นหาสินค้า
         </b-dropdown-item>
-        <b-dropdown-item aria-role="listitem">
-          ระบบ Point of sale
+        <b-dropdown-item aria-role="listitem" @click="$router.replace('/pos')">
+          ระบบขายหน้าร้าน
+        </b-dropdown-item>
+        <b-dropdown-item
+          aria-role="listitem"
+          @click="$router.replace('/backend/itemmanager')"
+        >
+          ส่วนจัดการระบบ
         </b-dropdown-item>
       </b-dropdown>
-      <div v-if="$store.getters.getUser != null">
-        <p class="subtitle is-4">เข้าสู่ระบบแล้ว</p>
+      <div class="content is-spaced" v-if="$store.getters.getUser != null">
+        <p class="subtitle is-4">
+          เข้าสู่ระบบแล้วในนาม {{ $store.getters.getUser.displayName }}
+        </p>
       </div>
     </div>
   </section>
@@ -31,7 +42,7 @@
 export default {
   name: "home",
   mounted() {
-    window.console.log("HOME is loaded!");
+    document.title = "หน้าหลัก " + this.$store.state.settings.backend.title;
   }
 };
 </script>

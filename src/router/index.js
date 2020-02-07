@@ -12,13 +12,21 @@ import LoggedOut from "../views/Authentication/LoggedOut.vue";
 import POS from "../views/POS.vue";
 
 import Backend from "../views/backend/Backend.vue";
+import Dashboard from "../views/backend/Dashboard.vue";
 import ItemManager from "../views/backend/ItemManager.vue";
 import Profile from "../views/backend/Profile.vue";
 import SaleHistory from "../views/backend/SaleHistory.vue";
 
+import Test from "../views/Test.vue";
+
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/test",
+    name: "test",
+    component: Test
+  },
   {
     path: "/",
     name: "home",
@@ -93,6 +101,11 @@ const routes = [
         path: "history",
         name: "history",
         component: SaleHistory
+      },
+      {
+        path: "dashboard",
+        name: "dashboard",
+        component: Dashboard
       }
     ],
     beforeEnter: async function(to, from, next) {

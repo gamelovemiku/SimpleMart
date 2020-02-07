@@ -89,9 +89,9 @@
             <b-field label="มูลค่าและการทอนเงิน" style="margin-top: 2rem;">
               <h1 class="title is-1">
                 {{ moneypaid - totalPrice }}
-                <b-tag v-if="carts.length == 0" type="is-danger"
-                  >ไม่มีอะไรอยู่ในตะกร้า!</b-tag
-                >
+                <b-tag v-if="carts.length == 0" type="is-danger">
+                  ไม่มีอะไรอยู่ในตะกร้า!
+                </b-tag>
                 <b-tag
                   v-if="carts.length > 0 && moneypaid == 0"
                   type="is-warning"
@@ -121,7 +121,7 @@
                 <tr v-for="(cart, index) in carts" :key="cart.barcode">
                   <th>{{ cart.barcode }}</th>
                   <th>{{ cart.description }}</th>
-                  <th>{{ cart.price }}</th>
+                  <th>{{ cart.price }} บาท</th>
                   <th>
                     <b-button
                       type="is-danger"
@@ -155,7 +155,7 @@
             </p>
             <ul class="menu-list">
               <li>
-                <a>
+                <a @click="isCandyModalOpen = true">
                   <span class="icon is-small">
                     <i class="mdi mdi-candycane"></i>
                   </span>
@@ -195,12 +195,57 @@
             </b-button>
           </div>
         </div>
+        <b-modal :active.sync="isCandyModalOpen" :width="640" scroll="keep">
+          <div class="card">
+            <div class="card-content">
+              <h4 class="title is-4">เพิ่มลูกอม</h4>
+              <p class="subtitle is-6">สินค้าขายแบบพิเศษ</p>
+              <div class="columns is-multiline">
+                <div class="column is-6">
+                  <b-field label="รูปแบบราคา">
+                    <b-select
+                      v-model="candy.type"
+                      placeholder="เลือกรูปแบบราคา"
+                      expanded
+                    >
+                      <option value="3-2b">3 เม็ด 2 บาท</option>
+                      <option value="2-1b">2 เม็ด 1 บาท</option>
+                      <option value="1-1b">เม็ดละ 1 บาท</option>
+                      <option value="1-2b">เม็ดละ 2 บาท</option>
+                    </b-select>
+                  </b-field>
+                </div>
+                <div class="column is-6">
+                  <b-field label="จำนวนที่ซื้อ (เม็ด)">
+                    <b-numberinput
+                      v-model="candy.amount"
+                      controls-position="compact"
+                    ></b-numberinput>
+                  </b-field>
+                </div>
+                <div class="column is-12">
+                  <p class="subtitle is-6">
+                    ราคารวม {{ candyTotalPrice }} บาท
+                    <small>({{ candy.amount }} เม็ด)</small>
+                  </p>
+                </div>
+              </div>
+              <div class="buttons">
+                <b-button type="is-primary" @click="addCandy()" expanded
+                  >เพิ่มลงตะกร้าสินค้า</b-button
+                >
+              </div>
+            </div>
+          </div>
+        </b-modal>
       </div>
     </div>
   </section>
 </template>
 
 <script>
+//import axios from "axios";
+//import qs from "querystring";
 import { db, timestamp } from "../firebase";
 
 export default {
@@ -213,7 +258,12 @@ export default {
       items: [],
       carts: [],
       isLoading: true,
-      isSearching: false
+      isSearching: false,
+      isCandyModalOpen: false,
+      candy: {
+        type: null,
+        amount: 0
+      }
     };
   },
   methods: {
@@ -269,6 +319,20 @@ export default {
         }
       });
     },
+    addCandy() {
+      window.console.log("Added candy..");
+      let candy = {
+        barcode:
+          "CANDY" + this.candy.type.toUpperCase() + "00" + this.candy.amount,
+        category: "Candy",
+        description: "ลูกอม",
+        price: this.candyTotalPrice
+      };
+      this.carts.push(candy);
+      this.candy.type = null;
+      this.candy.amount = 0;
+      this.isCandyModalOpen = false;
+    },
     removeFromCart: function(index) {
       this.$delete(this.carts, index);
     }
@@ -279,9 +343,43 @@ export default {
         return accumulate + Number(data.price);
       }, 0);
       return sum.toFixed(2);
+    },
+    candyTotalPrice: function() {
+      switch (this.candy.type) {
+        case "3-2b":
+          return (this.candy.amount / 3) * 2;
+        case "2-1b":
+          return (this.candy.amount / 2) * 1;
+        case "1-1b":
+          return this.candy.amount * 1;
+        case "1-2b":
+          return this.candy.amount * 2;
+        default:
+          return 0;
+      }
     }
   },
-  mounted() {}
+  mounted() {
+    document.title =
+      "ระบบขายหน้าร้าน " + this.$store.state.settings.general.title;
+    /*
+    axios({
+      method: "post",
+      url: "https://localhost:8080" + "/api/notify",
+      headers: {
+        Authorization: "Bearer " + "CPXqOhK04uWGPClVHHIw4R65gbUryH9SN8RHqHva4SR"
+      },
+      data: qs.stringify({
+        message: "RENEW"
+      })
+    })
+      .then(function(res) {
+        window.console.log(res.data);
+      })
+      .catch(function(err) {
+        window.console.error(err);
+      });*/
+  }
 };
 </script>
 

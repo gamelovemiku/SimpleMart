@@ -39,6 +39,7 @@ html,
 div,
 button,
 button.button,
+select,
 span {
   font-family: "Segoe UI", "Thonburi", sans-serif;
   -webkit-font-smoothing: antialiased;

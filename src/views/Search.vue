@@ -101,6 +101,7 @@ export default {
     }
   },
   mounted() {
+    document.title = "ค้นหาสินค้า " + this.$store.state.settings.general.title;
     //this.searchByBarcode();
   }
 };

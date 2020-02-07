@@ -16,6 +16,7 @@ const instance = firebase.initializeApp({
 export const firebaseglobal = instance;
 export const db = instance.firestore();
 export const auth = instance.auth();
+//export const storage = instance.storage();
 
 export const timestamp = firebase.firestore.Timestamp;
 

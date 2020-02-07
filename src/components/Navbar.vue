@@ -5,8 +5,8 @@
         <template slot="brand">
           <b-navbar-item tag="router-link" :to="{ path: '/' }">
             <b>SimpleMart</b>
-            <b-tag class="tag-logo" rounded> beta</b-tag>
           </b-navbar-item>
+          <a class="navbar-item"><b-icon pack="fab" icon="github"></b-icon></a>
         </template>
         <template slot="start">
           <b-navbar-item tag="router-link" :to="{ path: '/global' }">
@@ -23,7 +23,7 @@
             tag="router-link"
             :to="{ path: '/backend/itemmanager' }"
           >
-            <a class="button is-info">จัดการสินค้า</a>
+            <a class="button is-link">จัดการสินค้า</a>
           </b-navbar-item>
           <b-navbar-dropdown
             v-if="userSession != null"

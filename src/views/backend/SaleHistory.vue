@@ -99,6 +99,8 @@ export default {
   },
   computed: {},
   mounted() {
+    document.title =
+      "ประวัติการขาย " + this.$store.state.settings.backend.title;
     this.getAllHistory();
   }
 };

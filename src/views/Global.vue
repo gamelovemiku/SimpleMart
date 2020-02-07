@@ -73,6 +73,8 @@ export default {
     }
   },
   mounted() {
+    document.title =
+      "สินค้าทั้งหมด " + this.$store.state.settings.general.title;
     this.getAllItems();
   }
 };

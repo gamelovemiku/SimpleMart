@@ -51,16 +51,17 @@
 </template>
 
 <script>
-import { auth } from "../../firebase";
+//import { auth } from "../../firebase";
 export default {
   data() {
     return {
-      authUser: "Not loggin"
+      authUser: this.$store.getters.getUser
     };
   },
   methods: {},
   mounted() {
-    auth.onAuthStateChanged(data => (this.authUser = data));
+    document.title =
+      "ข้อมูลส่วนตัว " + this.$store.state.settings.backend.title;
   }
 };
 </script>

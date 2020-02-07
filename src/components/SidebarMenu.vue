@@ -6,6 +6,13 @@
     <b-menu-list label="เมนู"></b-menu-list>
     <b-menu-list>
       <b-menu-item
+        label="ภาพรวมร้านค้า"
+        icon="newspaper-variant"
+        tag="router-link"
+        to="/backend/dashboard"
+      >
+      </b-menu-item>
+      <b-menu-item
         label="สินค้า"
         icon="store"
         tag="router-link"
