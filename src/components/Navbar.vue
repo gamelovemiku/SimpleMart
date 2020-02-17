@@ -6,7 +6,12 @@
           <b-navbar-item tag="router-link" :to="{ path: '/' }">
             <b>SimpleMart</b>
           </b-navbar-item>
-          <a class="navbar-item"><b-icon pack="fab" icon="github"></b-icon></a>
+          <a class="navbar-item" href="https://github.com/gamelovemiku/SimpleMart">
+            <b-icon
+              pack="fab"
+              icon="github"
+            ></b-icon>
+          </a>
         </template>
         <template slot="start">
           <b-navbar-item tag="router-link" :to="{ path: '/global' }">
@@ -27,7 +32,7 @@
           </b-navbar-item>
           <b-navbar-dropdown
             v-if="userSession != null"
-            :label="userSession.displayName"
+            :label="userSession.displayName || userSession.email"
           >
             <b-navbar-item tag="router-link" to="/backend/itemmanager">
               สินค้า
@@ -75,11 +80,11 @@
               <h4 class="title is-4">Login</h4>
               <p class="subtitle is-6">เข้าสู่ระบบ</p>
               <b-field label="ชื่อผู้ใช้">
-                <b-input value="johnsilver"></b-input>
+                <b-input v-model="form.email"></b-input>
               </b-field>
 
               <b-field label="รหัสผ่าน">
-                <b-input value="123" type="password"></b-input>
+                <b-input v-model="form.password" type="password"></b-input>
               </b-field>
 
               <div class="buttons is-right" style="margin-top: 1.25rem">
@@ -136,7 +141,11 @@ import { auth } from "../firebase";
 export default {
   data() {
     return {
-      isCardModalActive: false
+      isCardModalActive: false,
+      form: {
+        email: "",
+        password: ""
+      }
     };
   },
   methods: {
@@ -144,8 +153,8 @@ export default {
       auth
         .createUserWithEmailAndPassword(this.form.email, this.form.password)
         .then(
-          user => {
-            window.console.log(user);
+          () => {
+            this.$store.dispatch("closeModal");
           },
           err => window.console.log("Error! ", `${err.message}`, "error")
         )
@@ -155,10 +164,19 @@ export default {
       auth
         .signInWithEmailAndPassword(this.form.email, this.form.password)
         .then(
-          user => {
-            window.console.log(user);
+          () => {
+            this.$buefy.toast.open({
+              message: `เข้าสู่ระบบแล้ว`,
+              type: "is-success"
+            });
+            this.$store.dispatch("closeModal");
           },
-          err => window.console.log("Error! ", `${err.message}`, "error")
+          err => {
+            this.$buefy.toast.open({
+              message: `ไม่สามารถเข้าสู่ระบบได้ ${err}`,
+              type: "is-danger"
+            });
+          }
         )
         .finally(() => (this.loading = false));
     },
@@ -176,6 +194,9 @@ export default {
   computed: {
     userSession: function() {
       return this.$store.getters.getUser;
+    },
+    userRow: function() {
+      return this.$store.getters.getUserRow;
     }
   },
   mounted() {

@@ -15,9 +15,19 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     user: null,
+    role: null,
     items: {},
+    history: {},
     navbar: {
       authModalOpen: false
+    },
+    dashboard: {
+      total: {
+        members: 0,
+        items: 0,
+        history: 0,
+        income: 0
+      }
     },
     settings: {
       general: {
@@ -32,6 +42,9 @@ export default new Vuex.Store({
     getUser(state) {
       return state.user;
     },
+    getUserRow(state) {
+      return state.role;
+    },
     isAuthModalOpen(state) {
       return state.navbar.authModalOpen;
     }
@@ -45,6 +58,12 @@ export default new Vuex.Store({
     },
     SET_ITEMS(state, value) {
       state.items = value;
+    },
+    SET_HISTORY(state, value) {
+      state.history = value;
+    },
+    SET_USER_ROLE(state, value) {
+      state.role = value;
     }
   },
   actions: {
@@ -63,10 +82,19 @@ export default new Vuex.Store({
       auth.signInWithPopup(GoogleProvider).then(function(result) {
         Toast.open({
           duration: 8000,
-          message: `เข้าสู่ระบบแล้วในชื่อของ ${result.user.displayName}`,
+          message: `เข้าสู่ระบบแล้วในชื่อของ ${result.user.displayName} | ${result.user.uid}`,
           position: "is-bottom",
           type: "is-success"
         });
+        let data = {
+          role: "user"
+        };
+        db.collection("user_settings")
+          .doc(result.user.uid)
+          .set(data)
+          .then(() => {
+            this.getUserRow();
+          });
         context.commit("IS_MODAL_OPEN", false);
         router.replace("/");
       });
@@ -80,6 +108,15 @@ export default new Vuex.Store({
           position: "is-bottom",
           type: "is-success"
         });
+        let data = {
+          role: "user"
+        };
+        db.collection("user_settings")
+          .doc(result.user.uid)
+          .set(data)
+          .then(() => {
+            this.getUserRow();
+          });
         context.commit("IS_MODAL_OPEN", false);
         router.replace("/backend/profile");
       });
@@ -93,6 +130,15 @@ export default new Vuex.Store({
           position: "is-bottom",
           type: "is-success"
         });
+        let data = {
+          role: "user"
+        };
+        db.collection("user_settings")
+          .doc(result.user.uid)
+          .set(data)
+          .then(() => {
+            this.getUserRow();
+          });
         context.commit("IS_MODAL_OPEN", false);
         router.replace("/backend/profile");
       });
@@ -101,11 +147,19 @@ export default new Vuex.Store({
       auth.signOut().then(response => {
         window.console.log(response);
         window.console.log(router.currentRoute.path);
-        if (router.currentRoute.path != "/login") {
-          router.replace("/login");
+        if (router.currentRoute.path != "/") {
+          router.replace("/");
         }
         Toast.open("ออกจากระบบแล้ว!");
       });
+    },
+    getUserRow: function(context) {
+      db.collection("user_settings")
+        .doc(this.state.user.uid)
+        .get()
+        .then(doc => {
+          context.commit("SET_USER_ROLE", doc.data().role);
+        });
     },
     getAllItems: function(context) {
       db.collection("items")
@@ -118,6 +172,19 @@ export default new Vuex.Store({
         })
         .catch(err => {
           window.console.log("Not found..", err);
+        });
+    },
+    getAllHistory: function(context) {
+      db.collection("sale_history")
+        .get()
+        .then(querySnapshot => {
+          context.commit(
+            "SET_HISTORY",
+            querySnapshot.docs.map(doc => doc.data())
+          );
+        })
+        .catch(err => {
+          window.console.log("Not found history..", err);
         });
     },
     closeModal: function(context) {

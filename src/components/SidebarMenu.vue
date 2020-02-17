@@ -1,17 +1,10 @@
 <template>
   <b-menu>
     <b-message type="is-info">
-      <h6 class="title is-6">POS กำลังพัฒนาอยู่!</h6>
+      <h6 class="title is-6">POS กำลังพัฒนาอยู่! {{ userRow }}</h6>
     </b-message>
     <b-menu-list label="เมนู"></b-menu-list>
     <b-menu-list>
-      <b-menu-item
-        label="ภาพรวมร้านค้า"
-        icon="newspaper-variant"
-        tag="router-link"
-        to="/backend/dashboard"
-      >
-      </b-menu-item>
       <b-menu-item
         label="สินค้า"
         icon="store"
@@ -60,6 +53,14 @@ export default {
     };
   },
   methods: {},
+  computed: {
+    userSession: function() {
+      return this.$store.getters.getUser;
+    },
+    userRow: function() {
+      return this.$store.getters.getUserRow;
+    }
+  },
   mounted() {}
 };
 </script>

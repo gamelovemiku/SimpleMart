@@ -86,7 +86,7 @@
                 </div>
               </div>
             </b-field>
-            <b-field label="มูลค่าและการทอนเงิน" style="margin-top: 2rem;">
+            <b-field label="จำนวนเงินทอน" style="margin-top: 2rem;">
               <h1 class="title is-1">
                 {{ moneypaid - totalPrice }}
                 <b-tag v-if="carts.length == 0" type="is-danger">
@@ -162,18 +162,7 @@
                   ลูกอม
                 </a>
               </li>
-              <li>
-                <a>
-                  <span class="icon is-small">
-                    <i class="mdi mdi-egg"></i>
-                  </span>
-                  ไข่
-                </a>
-              </li>
             </ul>
-            <p class="menu-label">
-              Administration
-            </p>
           </aside>
           <hr />
           <div class="buttons">
@@ -302,7 +291,9 @@ export default {
           let tranaction = {
             sold: this.carts,
             totalprice: this.totalPrice,
-            sold_by: this.$store.getters.getUser.displayName,
+            sold_by:
+              this.$store.getters.getUser.displayName ||
+              this.$store.getters.getUser.email,
             date: timestamp.now()
           };
           db.collection("sale_history")
@@ -388,7 +379,7 @@ section {
   margin-top: -2rem;
 }
 hr {
-  margin: 2.5rem 2.5rem;
+  margin: 1.75rem 1.75rem;
 }
 .card {
   border-radius: 0.35rem;

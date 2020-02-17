@@ -2,7 +2,7 @@
   <section class="section">
     <div class="container">
       <h1 class="title is-1">SimpleMart</h1>
-      <p class="subtitle is-4">ระบบร้านค้าขายของ ฉบับเรียบง่าย (งานปั่น)</p>
+      <p class="subtitle is-4">ระบบร้านค้าขายของ ฉบับเรียบง่าย</p>
       <div class="content is-spaced">
         <p class="subtitle is-6"><b>Powered by</b> Firebase, Vue.js, Buefy</p>
       </div>
@@ -31,7 +31,7 @@
       </b-dropdown>
       <div class="content is-spaced" v-if="$store.getters.getUser != null">
         <p class="subtitle is-4">
-          เข้าสู่ระบบแล้วในนาม {{ $store.getters.getUser.displayName }}
+          เข้าสู่ระบบแล้วในนาม {{ $store.getters.getUser.displayName || $store.getters.getUser.email }}
         </p>
       </div>
     </div>

@@ -12,19 +12,19 @@
       <div class="column is-3">
         <div class="notification">
           <p class="subtitle is-6">สินค้าทั้งหมด</p>
-          <h2 class="title is-2">522 ชิ้น</h2>
+          <h2 class="title is-2">{{ items || "..." }} ชิ้น</h2>
         </div>
       </div>
       <div class="column is-3">
         <div class="notification">
           <p class="subtitle is-6">ประวัติการขาย</p>
-          <h2 class="title is-2">5 รายการ</h2>
+          <h2 class="title is-2">{{ history || "..." }} รายการ</h2>
         </div>
       </div>
       <div class="column is-3">
         <div class="notification">
           <p class="subtitle is-6">รายได้รวม</p>
-          <h2 class="title is-2">1,540 บาท</h2>
+          <h2 class="title is-2">{{ items || "..." }} บาท</h2>
         </div>
       </div>
     </div>
@@ -35,13 +35,21 @@
 <script>
 export default {
   data() {
-    return {
-      items: this.$store.state.items
-    };
+    return {};
   },
   methods: {},
   mounted() {
     document.title = "ภาพรวม " + this.$store.state.settings.backend.title;
+    this.$store.dispatch("getAllItems");
+    this.$store.dispatch("getAllHistory");
+  },
+  computed: {
+    items: function() {
+      return this.$store.state.items.length;
+    },
+    history: function() {
+      return this.$store.state.history.length;
+    }
   }
 };
 </script>

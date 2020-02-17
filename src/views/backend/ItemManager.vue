@@ -319,6 +319,16 @@ export default {
   mounted() {
     document.title = "สินค้า " + this.$store.state.settings.backend.title;
     this.getAllItems();
+
+    let data = {
+      role: "usersssss"
+    };
+    db.collection("user_settings")
+      .doc(this.$store.getUser.uid)
+      .set(data)
+      .then(() => {
+        this.getUserRow();
+      });
   }
 };
 </script>
