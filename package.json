@@ -10,7 +10,7 @@
   "dependencies": {
     "@growthbunker/vuesocial": "^0.1.0",
     "@zxing/library": "^0.15.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "buefy": "^0.8.10",
     "bulma": "^0.8.0",
     "core-js": "^3.4.4",
